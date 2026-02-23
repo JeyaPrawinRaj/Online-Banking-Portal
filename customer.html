@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Customer Dashboard - Online Banking Portal</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f6f8;}
+    .container { max-width: 900px; margin:20px auto; padding:20px;}
+    header { background:#0066b3; color:#fff; display:flex; justify-content:space-between; align-items:center; padding:15px 20px; border-radius:8px 8px 0 0;}
+    header h1 { margin:0; font-size:1.5em; }
+    nav { margin:15px 0; text-align:center; }
+    nav a { text-decoration:none; color:#0066b3; margin:0 15px; font-weight:bold; }
+    main { background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:30px; text-align:center; }
+    button { background:#0066b3; color:#fff; border:none; border-radius:5px; padding:10px 20px; margin:10px; cursor:pointer; font-size:16px;}
+    button:hover { background:#004d80; }
+    .hidden { display:none; }
+    input { width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+    .msg { margin-top:10px; font-weight:bold; }
+    footer { margin-top:30px; text-align:center; font-size:0.9em; color:#555; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Customer Dashboard</h1>
+      <button id="btnLogout">Logout</button>
+    </header>
+
+    <nav>
+      <a href="#" id="btnHome">Home</a>
+    </nav>
+
+    <main>
+      <!-- Dashboard Home -->
+      <section id="homeSection">
+        <h2>Welcome to Your Dashboard</h2>
+        <p>Select an action below to continue:</p>
+        <button id="goTransaction">Transaction Request</button>
+        <button id="goLoan">Loan Request</button>
+      </section>
+
+      <!-- Transaction Section -->
+      <section id="transactionSection" class="hidden">
+        <h2>Transaction Request</h2>
+        <input id="fromAcc" placeholder="From Account Number">
+        <input id="toAcc" placeholder="To Account Number">
+        <input id="amount" type="number" placeholder="Amount">
+        <input id="desc" placeholder="Description">
+        <button id="btnSubmitTrans">Submit Transaction</button>
+        <button onclick="showHome()">Back</button>
+        <div id="msgTrans" class="msg"></div>
+      </section>
+    </main>
+
+    <footer><small>© 2025 Online Banking Portal | All Rights Reserved</small></footer>
+  </div>
+
+  <script>
+    // Navigation
+    const home = document.getElementById("homeSection");
+    const trans = document.getElementById("transactionSection");
+
+    function showHome() {
+      home.classList.remove("hidden");
+      trans.classList.add("hidden");
+    }
+
+    document.getElementById("btnHome").onclick = showHome;
+    document.getElementById("goTransaction").onclick = () => {
+      home.classList.add("hidden");
+      trans.classList.remove("hidden");
+    };
+
+    // ✅ When "Loan Request" is clicked → Go to loan.html
+    document.getElementById("goLoan").onclick = () => {
+      window.location.href = "loan.html";
+    };
+
+    // Logout
+    document.getElementById("btnLogout").onclick = () => {
+      alert("You are now logged out.");
+      window.location.href = "index.html";
+    };
+
+    // Transaction Submission
+    document.getElementById("btnSubmitTrans").onclick = async () => {
+      const data = {
+        fromAcc: document.getElementById("fromAcc").value.trim(),
+        toAcc: document.getElementById("toAcc").value.trim(),
+        amount: document.getElementById("amount").value.trim(),
+        desc: document.getElementById("desc").value.trim()
+      };
+      const msg = document.getElementById("msgTrans");
+
+      if(!data.fromAcc || !data.toAcc || !data.amount) {
+        msg.innerHTML = "<span style='color:red;'>Please fill all fields!</span>";
+        return;
+      }
+
+      const res = await fetch("http://localhost:3000/api/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      msg.innerHTML = `<span style='color:${result.success ? "green" : "red"};'>${result.message}</span>`;
+    };
+  </script>
+</body>
+</html>

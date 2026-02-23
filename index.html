@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Online Banking Portal — Login & Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    header {
+      background: #0066b3;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+    main { padding: 20px; }
+
+    .auth-panel h2 {
+      text-align: center;
+      color: #0066b3;
+    }
+    .auth-panel input, .auth-panel select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .auth-panel button {
+      width: 100%;
+      padding: 10px;
+      background: #0066b3;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .auth-panel button:hover { background: #004d80; }
+    .auth-panel p { text-align: center; margin-top: 10px; }
+
+    .sbi-style-form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #f8f9fb;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+    label { font-weight: bold; margin-bottom: 5px; }
+    .required { color: red; }
+    input, select {
+      padding: 8px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+    .captcha-group { display: flex; flex-direction: column; }
+    .captcha-display {
+      font-weight: bold;
+      letter-spacing: 5px;
+      background: #e1e1e1;
+      font-size: 20px;
+      padding: 10px;
+      text-align: center;
+      border-radius: 5px;
+      margin: 5px 0;
+      user-select: none;
+    }
+    .refresh-btn {
+      background: #ccc;
+      color: #000;
+      margin-top: 5px;
+      font-size: 12px;
+      padding: 5px 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100px;
+      align-self: center;
+    }
+    .refresh-btn:hover { background: #bbb; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header><h1>Online Banking Portal — Demo</h1></header>
+    <main>
+      <div class="auth-panel">
+
+        <!-- Login Panel -->
+        <div id="loginPanel">
+          <h2>Login</h2>
+          <input id="loginEmail" placeholder="Username">
+          <input id="loginPass" type="password" placeholder="Password">
+          <select id="loginType" required>
+            <option value="">-- Select User Type --</option>
+            <option value="Customer">Customer</option>
+          </select>
+          <button id="btnLogin">Login</button>
+          <p>Don't have an account? <a href="#" id="showReg">Register</a></p>
+        </div>
+
+        <!-- Register Panel -->
+        <div id="registerPanel" style="display:none">
+          <h2>User Registration</h2>
+          <form id="regForm" class="sbi-style-form">
+            <div class="form-group">
+              <label>Account Number <span class="required">*</span></label>
+              <input id="regAcc" name="accountNumber" required>
+            </div>
+            <div class="form-group">
+              <label>CIF Number <span class="required">*</span></label>
+              <input id="regCif" name="cifNumber" required>
+            </div>
+            <div class="form-group">
+              <label>Username <span class="required">*</span></label>
+              <input id="regEmail" name="email" required>
+            </div>
+            <div class="form-group">
+              <label>Phone <span class="required">*</span></label>
+              <input id="regPhone" type="tel" name="phone" required>
+            </div>
+            <div class="form-group">
+              <label>Password <span class="required">*</span></label>
+              <input id="regPass" type="password" name="password" required>
+            </div>
+
+            <!-- CAPTCHA -->
+            <div class="form-group captcha-group">
+              <label>Enter Captcha <span class="required">*</span></label>
+              <div id="captchaText" class="captcha-display"></div>
+              <button type="button" class="refresh-btn" id="refreshCaptcha">↻ Refresh</button>
+              <input id="regCaptcha" placeholder="Enter Captcha" required>
+            </div>
+
+            <button type="button" id="btnRegister">Register</button>
+            <p><a href="#" id="backLogin">Back to login</a></p>
+          </form>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // --- CAPTCHA ---
+    function generateCaptcha() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let captcha = "";
+      for (let i = 0; i < 5; i++) captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+      document.getElementById("captchaText").textContent = captcha;
+    }
+    document.getElementById("refreshCaptcha").onclick = generateCaptcha;
+    generateCaptcha();
+
+    // --- API POST helper ---
+    async function apiPost(url, data) {
+      const res = await fetch("http://localhost:3000" + url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      return res.json();
+    }
+
+    // --- Toggle Panels ---
+    document.getElementById('showReg').onclick = (e) => {
+      e.preventDefault();
+      document.getElementById('loginPanel').style.display = 'none';
+      document.getElementById('registerPanel').style.display = 'block';
+      clearRegForm(); // Clear form every time registration opens
+      generateCaptcha();
+    };
+
+    document.getElementById('backLogin').onclick = (e) => {
+      e.preventDefault();
+      document.getElementById('registerPanel').style.display = 'none';
+      document.getElementById('loginPanel').style.display = 'block';
+      clearRegForm(); // Clear form when going back
+    };
+
+    // --- Clear Registration Form ---
+    function clearRegForm() {
+      document.getElementById('regAcc').value = "";
+      document.getElementById('regCif').value = "";
+      document.getElementById('regEmail').value = "";
+      document.getElementById('regPhone').value = "";
+      document.getElementById('regPass').value = "";
+      document.getElementById('regCaptcha').value = "";
+    }
+
+    // --- Register Button ---
+    document.getElementById('btnRegister').onclick = async () => {
+      const acc = document.getElementById('regAcc').value.trim();
+      const cif = document.getElementById('regCif').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPass').value.trim();
+      const captchaInput = document.getElementById('regCaptcha').value.trim();
+      const captchaText = document.getElementById('captchaText').textContent.trim();
+
+      if (captchaInput !== captchaText) {
+        alert("Captcha does not match. Try again!");
+        generateCaptcha();
+        return;
+      }
+
+      const r = await apiPost('/register', { acc, cif, email, phone, password });
+      alert(r.error || r.message);
+
+      if (!r.error) {
+        clearRegForm(); // Clear after successful registration
+        document.getElementById('registerPanel').style.display = 'none';
+        document.getElementById('loginPanel').style.display = 'block';
+      }
+    };
+
+    // --- Login Button ---
+    document.getElementById('btnLogin').onclick = async () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPass').value.trim();
+      const userType = document.getElementById('loginType').value.trim();
+
+      if (!email || !password || !userType) {
+        alert("Please fill all fields and select a user type!");
+        return;
+      }
+
+      const r = await apiPost('/login', { email, password, userType });
+      alert(r.error || r.message);
+      if (!r.error) {
+        if (userType === 'Customer') window.location.href = 'customer.html';
+        else if (userType === 'Employee') window.location.href = 'employee.html';
+        else if (userType === 'Manager') window.location.href = 'manager.html';
+      }
+    };
+  </script>
+</body>
+</html>

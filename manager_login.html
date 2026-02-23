@@ -1,0 +1,85 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Manager Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: linear-gradient(135deg, #395886, #2a4365);
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+            }
+            .login-container {
+                background: white;
+                padding: 30px 40px;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                width: 350px;
+                text-align: center;
+            }
+            h2 {
+                color: #395886;
+            }
+            input[type="text"],
+            input[type="password"] {
+                width: 90%;
+                padding: 10px;
+                margin: 10px 0;
+                border: 1px solid #aaa;
+                border-radius: 5px;
+            }
+            button {
+                background: #395886;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1em;
+                width: 100%;
+            }
+            button:hover {
+                background: #2a4365;
+            }
+            p {
+                color: red;
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-container">
+            <h2>Manager Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Enter Username" required><br>
+                <input type="password" id="password" placeholder="Enter Password" required><br>
+                <button type="submit">Login</button>
+            </form>
+            <p id="errorMsg"></p>
+        </div>
+
+        <script>
+            // Default credentials (stored locally)
+            const defaultUser = { username: "Ramkumar", password: "9344281080" };
+
+            // Load saved credentials if changed
+            const savedUser = JSON.parse(localStorage.getItem("managerCreds")) || defaultUser;
+
+            document.getElementById("loginForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const uname = document.getElementById("username").value.trim();
+                const pwd = document.getElementById("password").value.trim();
+                if (uname === savedUser.username && pwd === savedUser.password) {
+                    window.location.href = "manager_dashboard.html";
+                } else {
+                    document.getElementById("errorMsg").textContent = "Invalid username or password!";
+                }
+            });
+        </script>
+    </body>
+    </html>

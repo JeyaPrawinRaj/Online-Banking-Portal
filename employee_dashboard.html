@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employee Dashboard | Online Banking Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* GENERAL STYLING */
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100%;
+    background: #002b5b;
+    color: #fff;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.sidebar h2 {
+    margin-bottom: 40px;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: #ffcc00;
+}
+.sidebar button {
+    width: 200px;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 6px;
+    background: #004080;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: left;
+    padding-left: 20px;
+    transition: 0.3s;
+}
+.sidebar button:hover {
+    background: #ffcc00;
+    color: #002b5b;
+}
+
+/* MAIN CONTENT */
+.main {
+    margin-left: 260px;
+    padding: 30px;
+}
+header {
+    background: #003366;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 6px;
+}
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+section {
+    display: none;
+    margin-top: 25px;
+}
+.active {
+    display: block;
+}
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: #003366;
+    color: white;
+}
+.action-btn {
+    background: #0073e6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+.action-btn:hover {
+    background: #005bb5;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.modal-content h3 {
+    color: #003366;
+}
+.modal-content button {
+    margin-top: 15px;
+    background: #004080;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.modal-content button:hover {
+    background: #ffcc00;
+    color: #002b5b;
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Employee Panel</h2>
+    <button onclick="showSection('transactions')">💳 View Transactions</button>
+    <button onclick="showSection('customers')">👥 View Customers</button>
+    <button onclick="showSection('loans')">🏦 Loan Verification</button>
+    <button onclick="logout()">🚪 Logout</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+    <header>
+        <h1>Welcome Employee</h1>
+        <p>Monitor, verify, and manage customer banking operations securely.</p>
+    </header>
+
+    <section id="transactions" class="card active">
+        <h2>All Transactions</h2>
+        <table></table>
+    </section>
+
+    <section id="customers" class="card">
+        <h2>Customer Details</h2>
+        <table></table>
+    </section>
+
+    <section id="loans" class="card">
+        <h2>Loan Applications</h2>
+        <table></table>
+    </section>
+</div>
+
+<!-- MODAL -->
+<div id="popupModal" class="modal">
+  <div class="modal-content">
+    <h3 id="modalText"></h3>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+function showSection(id) {
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'customers') loadCustomers();
+    if (id === 'transactions') loadTransactions();
+    if (id === 'loans') loadLoans();
+}
+
+// ✅ Fetch customers
+function loadCustomers() {
+    fetch("http://localhost:3000/customers")
+    .then(res => res.json())
+    .then(data => {
+        const table = document.querySelector("#customers table");
+        table.innerHTML = `
+            <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th></tr>
+            ${data.map(r => `
+                <tr>
+                    <td>${r.customer_id}</td>
+                    <td>${r.name}</td>
+                    <td>${r.email}</td>
+                    <td>${r.phone}</td>
+                </tr>`).join("")}
+        `;
+    });
+}
+
+// ✅ Fetch transactions
+function loadTransactions() {
+    fetch("http://localhost:3000/transactions")
+    .then(res => res.json())
+    .then(data => {
+        const table = document.querySelector("#transactions table");
+        table.innerHTML = `
+            <tr><th>Transaction ID</th><th>Customer ID</th><th>Amount</th><th>Date</th></tr>
+            ${data.map(r => `
+                <tr>
+                    <td>${r.transaction_id}</td>
+                    <td>${r.customer_id}</td>
+                    <td>₹${r.amount}</td>
+                    <td>${new Date(r.transaction_date).toLocaleDateString()}</td>
+                </tr>`).join("")}
+        `;
+    });
+}
+
+// ✅ Fetch loans
+function loadLoans() {
+    fetch("http://localhost:3000/loans")
+    .then(res => res.json())
+    .then(data => {
+        const table = document.querySelector("#loans table");
+        table.innerHTML = `
+            <tr><th>Loan ID</th><th>Customer ID</th><th>Amount</th><th>Purpose</th><th>Status</th><th>Action</th></tr>
+            ${data.map(r => `
+                <tr>
+                    <td>${r.loan_id}</td>
+                    <td>${r.customer_id}</td>
+                    <td>₹${r.amount}</td>
+                    <td>${r.purpose}</td>
+                    <td>${r.status}</td>
+                    <td>
+                        <button class="action-btn" onclick="updateLoan('${r.loan_id}','Verified')">Verify</button>
+                        <button class="action-btn" onclick="updateLoan('${r.loan_id}','Forwarded')">Forward</button>
+                        <button class="action-btn" onclick="updateLoan('${r.loan_id}','Unverified')">Unverify</button>
+                    </td>
+                </tr>`).join("")}
+        `;
+    });
+}
+
+// ✅ Update loan status
+function updateLoan(loan_id, status) {
+    fetch("http://localhost:3000/update-loan-status", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({loan_id, status})
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("modalText").textContent = `✅ Loan ${loan_id} marked as ${status}`;
+        document.getElementById("popupModal").style.display = "flex";
+        loadLoans(); // refresh after update
+    });
+}
+
+function closeModal() {
+    document.getElementById("popupModal").style.display = "none";
+}
+
+function logout() {
+    alert("You have been logged out successfully!");
+    window.location.href = "employee_login.html";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reports</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Reports</h1>
+      <div class="hdr-right">
+        <a href="customer.html">Back</a>
+        <button id="btnLogout">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h3>Recent Transactions</h3>
+        <button id="btnLoad">Load</button>
+        <div id="reportOut"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="common.js"></script>
+  <script>
+    ensureAuthRedirect('reports.html');
+    document.getElementById('btnLogout').onclick = () => { clearAuth(); location.href='index.html'; };
+
+    document.getElementById('btnLoad').onclick = async () => {
+      const r = await apiGet('/reports/transactions', true);
+      if (r.error) { document.getElementById('reportOut').innerText = r.error; return; }
+      document.getElementById('reportOut').innerHTML = r.map(t => `<div>${t.timestamp} | ${t.account_no} | ${t.type} | ₹${t.amount} | ${t.description}</div>`).join('');
+    };
+  </script>
+</body>
+</html>

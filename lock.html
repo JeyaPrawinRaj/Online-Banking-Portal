@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lock & Unlock Internet Banking Access</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f8fb;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 700px;
+    margin: 50px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    padding: 30px 40px;
+  }
+
+  .header {
+    text-align: center;
+    border-bottom: 2px solid #0078d7;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    color: #0078d7;
+    margin: 0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  .required {
+    color: red;
+  }
+
+  input, select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+  }
+
+  .captcha-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .captcha-box {
+    background: #e0e0e0;
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 3px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    user-select: none;
+    border: 1px solid #999;
+  }
+
+  .refresh-btn {
+    background: #ddd;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .refresh-btn:hover {
+    background: #ccc;
+  }
+
+  .buttons {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 0 5px;
+  }
+
+  .confirm-btn {
+    background-color: #f39c12;
+  }
+
+  .reset-btn {
+    background-color: #e67e22;
+  }
+
+  .note {
+    background-color: #fef7e0;
+    border-left: 5px solid #f1c40f;
+    padding: 10px 15px;
+    font-size: 14px;
+    margin-top: 20px;
+  }
+
+  .note ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h2>Lock and Unlock Internet Banking Access</h2>
+  </div>
+
+  <form id="lockUnlockForm">
+    <div>
+      <label>Select Lock or Unlock User Access <span class="required">*</span></label>
+      <select id="accessType" required>
+        <option value="">-- Select --</option>
+        <option value="Lock">Lock User Access</option>
+        <option value="Unlock">Unlock User Access</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Username <span class="required">*</span></label>
+      <input type="text" id="username" required>
+    </div>
+
+    <div>
+      <label>Account Number <span class="required">*</span></label>
+      <input type="text" id="accountNumber" required>
+    </div>
+
+    <div>
+      <label>Enter the text as shown in the image <span class="required">*</span></label>
+      <div class="captcha-section">
+        <div id="captchaCode" class="captcha-box"></div>
+        <button type="button" class="refresh-btn" onclick="generateCaptcha()">↻ Refresh</button>
+      </div>
+      <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
+    </div>
+
+    <div class="buttons">
+      <button type="button" class="confirm-btn" onclick="confirmForm()">Confirm</button>
+      <button type="reset" class="reset-btn">Reset</button>
+    </div>
+  </form>
+
+  <div class="note">
+    <ul>
+      <li>Enter your Username registered with internet banking.</li>
+      <li>This facility is available only for retail customers.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Generate random CAPTCHA
+  function generateCaptcha() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let captcha = '';
+    for (let i = 0; i < 5; i++) {
+      captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('captchaCode').textContent = captcha;
+  }
+
+  // Validate and confirm form
+  function confirmForm() {
+    const username = document.getElementById('username').value.trim();
+    const account = document.getElementById('accountNumber').value.trim();
+    const inputCaptcha = document.getElementById('captchaInput').value.trim();
+    const realCaptcha = document.getElementById('captchaCode').textContent.trim();
+
+    if (!username || !account || !inputCaptcha) {
+      alert('Please fill all mandatory fields.');
+      return;
+    }
+
+    if (inputCaptcha.toUpperCase() !== realCaptcha.toUpperCase()) {
+      alert('Captcha does not match. Try again!');
+      generateCaptcha();
+      document.getElementById('captchaInput').value = '';
+      return;
+    }
+
+    alert('Form submitted successfully (demo only).');
+  }
+
+  // Initialize captcha when page loads
+  window.onload = generateCaptcha;
+</script>
+
+</body>
+</html>

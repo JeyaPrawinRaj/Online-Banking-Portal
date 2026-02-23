@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Login & Registration - Online Banking Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #003366;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #003366;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    input, select, textarea {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    button {
+      background: #003366;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #002850;
+    }
+
+    .success {
+      color: green;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .toggle-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .toggle-link a {
+      color: #003366;
+      text-decoration: none;
+    }
+
+    .toggle-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Online Banking Portal — Employee Access</h1>
+  </header>
+
+  <!-- Employee Login (Visible first) -->
+  <div class="container" id="loginContainer">
+    <h2>Employee Login</h2>
+    <form id="loginForm">
+      <label>Username</label>
+      <input type="text" id="loginUsername" required>
+
+      <label>Password</label>
+      <input type="password" id="loginPassword" required>
+
+      <button type="submit">Login</button>
+    </form>
+    <div id="loginMsg"></div>
+
+    <div class="toggle-link">
+      Don't have an account? <a href="#" onclick="showRegister()">Register here</a>
+    </div>
+  </div>
+
+  <!-- Employee Registration (Hidden initially) -->
+  <div class="container" id="registerContainer" style="display:none;">
+    <h2>Employee Registration</h2>
+    <form id="registerForm">
+      <label>Full Name</label>
+      <input type="text" id="empName" required>
+
+      <label>Employee ID</label>
+      <input type="text" id="empId" required>
+
+      <label>Username</label>
+      <input type="text" id="empUsername" required>
+
+      <label>Password</label>
+      <input type="password" id="empPassword" required>
+
+      <label>Role</label>
+      <select id="empRole" required>
+        <option value="">--Select Role--</option>
+        <option>Manager</option>
+        <option>Teller</option>
+        <option>Auditor</option>
+        <option>Customer Service</option>
+        <option>Loan Officer</option>
+        <option>IT Specialist</option>
+        <option>Security Officer</option>
+        <option>Branch Assistant</option>
+      </select>
+
+      <label>Department</label>
+      <select id="empDept" required>
+        <option value="">--Select Department--</option>
+        <option>Accounts</option>
+        <option>Loans</option>
+        <option>Audit</option>
+        <option>Customer Relations</option>
+        <option>IT</option>
+        <option>Security</option>
+        <option>Branch Operations</option>
+        <option>Administration</option>
+      </select>
+
+      <label>Date of Birth</label>
+      <input type="date" id="empDOB" required>
+
+      <label>Email</label>
+      <input type="email" id="empEmail" required>
+
+      <label>Contact Number</label>
+      <input type="text" id="empContact" required>
+
+      <label>Address</label>
+      <textarea id="empAddress" rows="2" required></textarea>
+
+      <label>Date of Joining</label>
+      <input type="date" id="empDOJ" required>
+
+      <label>Qualifications</label>
+      <input type="text" id="empQualifications" required>
+
+      <label>Years of Experience</label>
+      <input type="number" id="empExperience" min="0" required>
+
+      <button type="submit">Register Employee</button>
+    </form>
+    <div id="registerMsg"></div>
+
+    <div class="toggle-link">
+      Already have an account? <a href="#" onclick="showLogin()">Login here</a>
+    </div>
+  </div>
+
+  <script>
+    // Toggle between Login and Register
+    function showLogin() {
+      document.getElementById('registerContainer').style.display = 'none';
+      document.getElementById('loginContainer').style.display = 'block';
+    }
+
+    function showRegister() {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('registerContainer').style.display = 'block';
+    }
+
+    // Registration logic (stored temporarily in localStorage)
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const emp = {
+        empId: document.getElementById('empId').value.trim(),
+        name: document.getElementById('empName').value.trim(),
+        username: document.getElementById('empUsername').value.trim(),
+        password: document.getElementById('empPassword').value.trim(),
+        role: document.getElementById('empRole').value,
+        dept: document.getElementById('empDept').value,
+        email: document.getElementById('empEmail').value.trim(),
+        contact: document.getElementById('empContact').value.trim(),
+        address: document.getElementById('empAddress').value.trim(),
+        dob: document.getElementById('empDOB').value,
+        doj: document.getElementById('empDOJ').value,
+        qualification: document.getElementById('empQualifications').value.trim(),
+        experience: document.getElementById('empExperience').value
+      };
+
+      if (localStorage.getItem(emp.username)) {
+        document.getElementById('registerMsg').innerHTML = '<p class="error">Username already exists!</p>';
+        return;
+      }
+
+      localStorage.setItem(emp.username, JSON.stringify(emp));
+      document.getElementById('registerMsg').innerHTML = '<p class="success">Employee registered successfully!</p>';
+      document.getElementById('registerForm').reset();
+    });
+
+    // Login logic (check localStorage)
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const user = localStorage.getItem(username);
+
+      if (!user) {
+        document.getElementById('loginMsg').innerHTML = '<p class="error">Username not found!</p>';
+        return;
+      }
+
+      const data = JSON.parse(user);
+      if (data.password === password) {
+        document.getElementById('loginMsg').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
+        setTimeout(() => {
+          window.location.href = "employee_dashboard.html";
+        }, 1000);
+      } else {
+        document.getElementById('loginMsg').innerHTML = '<p class="error">Incorrect password!</p>';
+      }
+    });
+  </script>
+</body>
+</html>

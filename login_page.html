@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Banking Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f4f6f9;
+    }
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    nav {
+      background: #004080;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .login-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      padding: 40px;
+    }
+    .login-box {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+      text-align: center;
+      border-radius: 8px;
+    }
+    .login-box h2 {
+      color: #003366;
+    }
+    .login-box button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .login-box button:hover {
+      background-color: #002850;
+    }
+    .ads {
+      background: #003366;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin: 20px;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ONLINE BANKING PORTAL</h1>
+    <p>The banker to every Indian</p>
+  </header>
+
+  <nav>
+    <a href="lockandunlockuser.html">Lock and Unlock User</a>
+  </nav>
+
+  <div class="login-container">
+    <!-- Personal Banking -->
+    <div class="login-box">
+      <h2>Personal Banking</h2>
+      <p>Login for individual customers to manage accounts online.</p>
+      <button onclick="location.href='index.html'">Login</button>
+      <br><br>
+      <a href="help.html">Help</a>
+    </div>
+
+    <!-- Employee Login -->
+    <div class="login-box">
+      <h2>Employee Login</h2>
+      <p>Access employee dashboard for handling customer requests.</p>
+      <button onclick="location.href='employee_login.html'">Login</button>
+      <br><br>
+      <a href="help.html">Help</a>
+    </div>
+
+    <!-- Manager Login -->
+    <div class="login-box">
+      <h2>Manager Login</h2>
+      <p>Access management tools, reports, and analytics dashboard.</p>
+      <button onclick="location.href='manager_login.html'">Login</button>
+      <br><br>
+      <a href="help.html">Help</a>
+    </div>
+  </div>
+
+  <div class="ads">
+    <marquee behavior="scroll" direction="left">
+      🚨 Important Information: Never share your OTP, PIN or password with anyone. | 
+      Bank announces migration to new secure domain: https://online.bank.in | 
+      Beware of fraud calls claiming to be from the Bank.
+    </marquee>
+  </div>
+
+  <footer>
+    © 2025 Online Banking Portal | Secure & Trusted
+  </footer>
+</body>
+</html>
